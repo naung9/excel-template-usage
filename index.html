@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel Template</title>
+</head>
+<body>
+<input type="file" id="excelFile" placeholder="Upload Template File" />
+<button onclick="downloadUpdated()">Download Updated Template</button>
+<script src="dist/excel-template-bundle.js"></script>
+<script>
+
+function downloadUpdated(){
+    let file = document.getElementById("excelFile").files[0];
+    if(file){
+        let fileReader = new FileReader();
+        fileReader.onload = (evt) => {
+            const data = [
+                {
+                    sheetNo: "First",
+                    data: {param1: "Hein Naung Nine", param2: 27, param3: "Yangon", param4: "Heeee"}
+                },
+                {
+                    sheetNo: "Second",
+                    data: {param5: "World", param6: "Hello", param7: "Mandalay", param8: "Harrrr"}
+                }
+            ]
+            const result = populateTemplate(evt.target.result, data);
+            const mediaType="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+            let a = document.createElement("a");
+            a.href = mediaType + result;
+            a.download = "Updated.xlsx";
+            a.click();
+        };
+        fileReader.readAsArrayBuffer(file);
+    }
+
+}
+</script>
+</body>
+</html>
