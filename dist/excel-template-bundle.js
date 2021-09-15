@@ -3,7 +3,8 @@
 
 var xlsx = require("xlsx-template");
 
-function populateTemplate(data, templates, returnType) {
+function populateTemplate(data, templates) {
+  var returnType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "base64";
   var xlsxTemplate = new xlsx(data);
   templates.forEach(function (template) {
     console.log(template);

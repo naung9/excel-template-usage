@@ -1,6 +1,6 @@
 const xlsx = require("xlsx-template");
 
-function populateTemplate(data,templates, returnType){
+function populateTemplate(data,templates, returnType = "base64"){
     let xlsxTemplate = new xlsx(data);
     templates.forEach(template => {
         console.log(template);
