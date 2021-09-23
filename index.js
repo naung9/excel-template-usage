@@ -41,7 +41,12 @@ function readAndWriteExcelSync(data, values, callBack,returnType = "base64"){
                     currentSheet = sheetName;
                     obj = {sheet: sheetName, cells: {}};
                 }
-                obj.cells[row.values[index+1]] = values.data[row.values[index+2]];
+                const keys = row.values[index + 2].toString().split(".");
+                let value = values.data;
+                keys.forEach(key => {
+                    value = value[key];
+                });
+                obj.cells[row.values[index+1]] = value;
             });
             sheetData.push(obj);
             console.log(sheetData);
