@@ -5,8 +5,8 @@
     <title>Excel Template</title>
 </head>
 <body>
-<input type="file" id="excelFile" placeholder="Upload Template File"/>
-<button onclick="downloadButAsync()">Download Updated Template</button>
+<input type="file" id="excelFile" placeholder="Upload Template File" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+<button onclick="showInfo()">Download Updated Template</button>
 <script src="dist/excel-template-bundle.js"></script>
 <script>
     const data = [
@@ -36,14 +36,23 @@
         }
     ];
 
-    function downloadUpdated() {
+    const config = {
+        configSheet: "Config",
+        startIndex: 1,
+        data: {
+            "hello": "Konichiwa",
+            "world": "Sekai",
+            "random": "MY RANDOM STRING"
+        }
+    }
+
+    function downloadButAsync() {
         let file = document.getElementById("excelFile").files[0];
         if (file) {
             let fileReader = new FileReader();
             fileReader.onload = (evt) => {
-                // const result = populateTemplate(evt.target.result, data);
-                readAndWriteExcel(evt.target.result, "buffer").then(result => {
-                    const finalResult = populateTemplate(result, data);
+                const result = populateTemplate(evt.target.result, data, "nodebuffer");
+                readAndWriteExcelSync(result, cellValues, finalResult => {
                     const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
                     let a = document.createElement("a");
                     a.href = mediaType + finalResult;
@@ -54,20 +63,22 @@
             fileReader.readAsArrayBuffer(file);
         }
     }
-
-    function downloadButAsync() {
+    function showInfo(){
+        console.log("Showing Excel Config");
         let file = document.getElementById("excelFile").files[0];
         if (file) {
+            console.log("File is present");
             let fileReader = new FileReader();
-            fileReader.onload = async (evt) => {
-                const result = populateTemplate(evt.target.result, data, "nodebuffer");
-                const finalResult = await readAndWriteExcel(result, cellValues);
-                const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
-                let a = document.createElement("a");
-                a.href = mediaType + finalResult;
-                a.download = "Updated.xlsx";
-                a.click();
-            };
+            fileReader.onload = (evt) => {
+                console.log("File is ready to read");
+                readAndWriteExcelSync(evt.target.result, config, finalResult=>{
+                    const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+                    let a = document.createElement("a");
+                    a.href = mediaType + finalResult;
+                    a.download = "Updated.xlsx";
+                    a.click();
+                });
+            }
             fileReader.readAsArrayBuffer(file);
         }
     }
